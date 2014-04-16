@@ -41,15 +41,18 @@ set<kmer> * getKmers(const string & corpus, const string & kmerString)
     set<kmer> * result = new set<kmer>();
     while (posIter != possibleKmers->end())
     {
-        size_t repeats = 0UL;
+        size_t repeats = 1UL;
         size_t basePos = *posIter;
-        size_t lastPos;
+        size_t lastPos = *posIter;
         do {
-            lastPos = *posIter;
+            if (*posIter - lastPos >= kmerString.length())
+            {
+                lastPos = *posIter;
+                repeats++;
+            }
             posIter++;
-            repeats++;
-        } while (posIter != possibleKmers->end()
-                && *posIter - lastPos == kmerString.length());
+        } while (posIter != possibleKmers->end() &&
+                *posIter - lastPos <= kmerString.length());
         result->insert(kmer(corpus.substr(basePos, kmerString.length()),
                 basePos,
                 repeats));
